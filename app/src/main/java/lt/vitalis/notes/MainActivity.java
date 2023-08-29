@@ -9,14 +9,16 @@ import android.widget.TextView;
 
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.Collection;
 import java.util.List;
+import java.util.UUID;
 
 import lt.vitalis.notes.databinding.ActivityMainBinding;
 
 public class MainActivity extends AppCompatActivity {
 
     private ActivityMainBinding binding;
-    private ArrayAdapter<String> adapter;
+    private ArrayAdapter<Note> adapter;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -27,6 +29,8 @@ public class MainActivity extends AppCompatActivity {
         setContentView(binding.getRoot());
 
         ArrayList<String> list = new ArrayList<>();
+
+//        list.addAll(generateDummyNotes(25));
 
         List<String> newList = Arrays.asList(
                 "Pirmadienis",
@@ -45,13 +49,27 @@ public class MainActivity extends AppCompatActivity {
         list.addAll(newList);
         list.addAll(newList);
 
-        adapter = new ArrayAdapter<>(
-                this,
-                android.R.layout.simple_list_item_1,
-                list
-        );
+//        adapter = new ArrayAdapter<>(
+//                this,
+//                android.R.layout.simple_list_item_1,
+//                list);
+
         binding.notesListView.setAdapter(adapter);
 
 
+    }
+
+    private List<Note> generateDummyNotes(int notesNumber) {
+        ArrayList<Note> notes = new ArrayList<>();
+        for (int i = 1; i <= notesNumber; i++) {
+            notes.add(
+                    new Note(
+                            i,
+                            UUID.randomUUID().toString().substring(0, 10),
+                            UUID.randomUUID().toString()
+                    )
+            );
+        }
+        return notes;
     }
 }
