@@ -6,7 +6,11 @@ import android.app.AlertDialog;
 import android.os.Bundle;
 import android.util.Log;
 import android.widget.ArrayAdapter;
+
+import com.google.android.material.snackbar.Snackbar;
+
 import java.util.ArrayList;
+
 import lt.vitalis.notes.databinding.ActivityMainBinding;
 
 public class MainActivity extends AppCompatActivity {
@@ -25,7 +29,9 @@ public class MainActivity extends AppCompatActivity {
         setUpListView();
         setUpListViewItemClick();
         setUpListViewItemLongClick();
+        setUpFloatingActionButtonClick();
     }
+
 
     private void setUpListView() {
         notes = new ArrayList<>();
@@ -41,6 +47,7 @@ public class MainActivity extends AppCompatActivity {
         );
         binding.notesListView.setAdapter(adapter);
     }
+
     private void setUpListViewItemClick() {
         binding.notesListView.setOnItemClickListener(
                 (adapterView, view, position, l) -> {
@@ -49,6 +56,7 @@ public class MainActivity extends AppCompatActivity {
                 }
         );
     }
+
     private void setUpListViewItemLongClick() {
         binding.notesListView.setOnItemLongClickListener(
                 (adapterView, view, position, l) -> {
@@ -60,20 +68,41 @@ public class MainActivity extends AppCompatActivity {
         );
     }
 
+    private void setUpFloatingActionButtonClick() {
+        binding.floatActionButton.setOnClickListener(
+                view -> {
+                   showSnackbar("FFAB was clicked");
+                }
+        );
+    }
+
+
     private void showItemRemoveAlertDialog(Note note) {
         AlertDialog.Builder builder = new AlertDialog.Builder(this);
         builder
                 .setMessage("Do you realy want to remove thid item?")
                 .setPositiveButton("Yes", (dialogInterface, i) -> {
-            removeNoteFromList(note);
-        })
+                    removeNoteFromList(note);
+                })
                 .setNegativeButton("No", null)
                 .show();
     }
 
-    private void removeNoteFromList (Note note) {
+    private void showSnackbar(String message) {
+
+        Snackbar
+                .make(
+                        binding.notesListView,
+                        "FAB was clicked",
+                        Snackbar.LENGTH_LONG
+                )
+                .show();
+    }
+
+    private void removeNoteFromList(Note note) {
         notes.remove(note);
         adapter.notifyDataSetChanged();
+        showSnackbar("Note with id: " + note.getId() + "was removed");
 
     }
 }
