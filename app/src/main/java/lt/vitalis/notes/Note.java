@@ -1,6 +1,5 @@
 package lt.vitalis.notes;
 
-import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
 
@@ -12,6 +11,10 @@ public class Note {
     private LocalDateTime creationDate;
     private LocalDateTime updateDate;
     private final DateTimeFormatter formater = DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss");
+
+    public Note() {
+
+    }
 
     public Note(int id,
                 String title,
@@ -26,27 +29,45 @@ public class Note {
     }
 
 
-    //    public int
+    public int getId() {
+        return id;
+    }
+
+    public String getTitle() {
+        return title;
+    }
+
+    public String getDescription() {
+        return description;
+    }
+
+    public LocalDateTime getCreationDate() {
+        return creationDate;
+    }
+
+    public LocalDateTime getUpdateDate() {
+        return updateDate;
+    }
+
     public void setTitle(String title) {
         this.title = title;
         this.updateDate = LocalDateTime.now();
     }
 
-
-    public Note() {
-
-
+    public void setDescription(String description) {
+        this.description = description;
+        this.updateDate = LocalDateTime.now();
     }
 
     @Override
     public String toString() {
         return String.format(
-                "Title: %s\nDescription:\n\t%s\n\t%s\n\t%s",
+                "id: %s\nTitle: %s\nDescription:\n\t%s\n\t%s\n\t%s",
+                this.id,
                 this.title,
                 this.description,
-                this.creationDate,
-                this.updateDate
+                this.creationDate.format(formater),
+                this.updateDate.format(formater)
         );
     }
-
 }
