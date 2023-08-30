@@ -3,6 +3,8 @@ package lt.vitalis.notes;
 import androidx.appcompat.app.AppCompatActivity;
 
 import android.app.AlertDialog;
+import android.content.Intent;
+import android.net.Uri;
 import android.os.Bundle;
 import android.util.Log;
 import android.widget.ArrayAdapter;
@@ -51,11 +53,15 @@ public class MainActivity extends AppCompatActivity {
     private void setUpListViewItemClick() {
         binding.notesListView.setOnItemClickListener(
                 (adapterView, view, position, l) -> {
-                    Log.i(TAG, "OnListeItemClicked: " + adapterView.getItemIdAtPosition(position));
-                    Log.i(TAG, "OnListeItemClicked: " + position);
+//                    Log.i(TAG, "OnListeItemClicked: " + adapterView.getItemAtPosition(position));
+//                    Log.i(TAG, "OnListeItemClicked: " + position);
+                    Note note = (Note) adapterView.getItemAtPosition(position);
+                    openNoteDeailsActivity(note);
                 }
         );
     }
+
+
 
     private void setUpListViewItemLongClick() {
         binding.notesListView.setOnItemLongClickListener(
@@ -103,6 +109,32 @@ public class MainActivity extends AppCompatActivity {
         notes.remove(note);
         adapter.notifyDataSetChanged();
         showSnackbar("Note with id: " + note.getId() + "was removed");
+
+    }
+    private void openNoteDeailsActivity(Note note) {
+        Intent intent = new Intent(this, NoteDetails.class);
+        intent.putExtra("id", note.getId());
+        intent.putExtra("title", note.getTitle());
+        intent.putExtra("description", note.getDescription());
+        intent.putExtra("creationDate", note.getCreationDate());
+        intent.putExtra("updateDate", note.getUpdateDate());
+        startActivity(intent);
+
+
+
+//        Intent sendIntent = new Intent();
+//        sendIntent.setAction(Intent.ACTION_SEND);
+//        sendIntent.putExtra(Intent.EXTRA_TEXT, note.toString());
+//        sendIntent.setType("text/plain");
+//
+//        startActivity(shareintent);
+
+
+//        String videoId = "0xB3T4MPEr0";
+//        Intent intent = new Intent(Intent.ACTION_VIEW, Uri.parse("vnd.youtube:"+videoId));
+//        intent.putExtra("VIDEO_ID", videoId);
+//        startActivity(intent);
+
 
     }
 }
