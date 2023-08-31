@@ -13,7 +13,7 @@ import lt.vitalis.notes.databinding.ActivityNoteDetailsBinding;
 
 
 public class NoteDetails extends AppCompatActivity {
-;
+
     private ActivityNoteDetailsBinding binding;
     private final DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd-HH:mm:ss");
     private Note note;
@@ -26,13 +26,28 @@ public class NoteDetails extends AppCompatActivity {
         setContentView(binding.getRoot());
 
         Intent intent = getIntent();
+        int noteId;
+
+
 
         if (intent.getExtras() != null) {
-            note = (Note) intent.getParcelableExtra("note");
+            noteId = intent.getIntExtra("note", 0);
             displayNoteDetails(note);
         }
-        setUpSaveButtonClick();
 
+
+        displayNoteDetails(noteId);
+
+    }
+    private void displayNoteDetails(int noteId) {
+        if (noteId == 0) {
+            note = new Note();
+        }
+        binding.noteIdTextView.setText(String.valueOf(noteId));
+    } else {
+        UseCaseRepository.notes.stream()
+                .filter(note -> note.getId() == noteId)
+                .findFirst()
     }
 
     private void setUpSaveButtonClick() {
