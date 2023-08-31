@@ -27,7 +27,7 @@ public class NoteDetails extends AppCompatActivity {
         Intent intent = getIntent();
 
         if (intent.getExtras() != null) {
-            Note note = (Note) intent.getParcelableExtra("note");
+            note = (Note) intent.getParcelableExtra("note");
             displayNoteDetails(note);
         }
         setUpSaveButtonClick();
@@ -37,13 +37,19 @@ public class NoteDetails extends AppCompatActivity {
     private void setUpSaveButtonClick() {
         binding.saveButton.setOnClickListener(
                 v -> {
+                    note.setTitle(binding.noteNameEditText.getText().toString());
+                    note.setDescripotion(binding.noteUpdateDateText.getText(toString());
+                    saveNote();
                     Intent finishIntent = new Intent();
-
-                    finishIntent.putExtra("note_object_return", "note");
+                    finishIntent.putExtra("note_object_return", note);
                     setResult(RESULT_OK, finishIntent);
                     finish();
                 }
         );
+    }
+
+    private void saveNote() {
+
     }
 
 
