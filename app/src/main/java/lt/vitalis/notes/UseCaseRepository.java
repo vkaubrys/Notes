@@ -5,7 +5,7 @@ import java.util.List;
 import java.util.UUID;
 
 public class UseCaseRepository {
-    public static  List<Note> notes = new ArrayList<>();
+    public static List<Note> notes = new ArrayList<>();
 
 
     public static void generateDummyNotes(int notesNumber) {

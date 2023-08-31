@@ -1,14 +1,14 @@
 package lt.vitalis.notes;
 
-import androidx.appcompat.app.AppCompatActivity;
-
 import android.content.Intent;
 import android.os.Bundle;
-import android.os.Parcelable;
+import android.view.View;
+
+import androidx.appcompat.app.AppCompatActivity;
 
 import java.time.format.DateTimeFormatter;
+import java.util.Comparator;
 
-import lt.vitalis.notes.databinding.ActivityMainBinding;
 import lt.vitalis.notes.databinding.ActivityNoteDetailsBinding;
 
 
@@ -16,7 +16,7 @@ public class NoteDetails extends AppCompatActivity {
 
     private ActivityNoteDetailsBinding binding;
     private final DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd-HH:mm:ss");
-    private Note note;
+
 
 
     @Override
@@ -29,7 +29,6 @@ public class NoteDetails extends AppCompatActivity {
         int noteId;
 
 
-
         if (intent.getExtras() != null) {
             noteId = intent.getIntExtra("note", 0);
             displayNoteDetails(note);
@@ -37,14 +36,60 @@ public class NoteDetails extends AppCompatActivity {
 
 
         displayNoteDetails(noteId);
+        setUpSaveButton();
 
     }
+
+    private void setUpSaveButton() {
+        binding.saveButton.setOnClickListener(
+                addValuesToNote();
+                v -> {
+                    if (note.getId() == 0) {
+
+                        saveNewNote();
+                    } else {
+                        updateNote();
+                    }
+                }
+        );
+
+    }
+
+    private View.OnClickListener addValuesToNote() {
+        note.setTitle();
+        bindingNameEditText.toString()
+    }
+
+    private void updateNote() {
+        UseCaseRepository.notes.stream()
+                .filter(onlNote -> onlNote.getId()) == note.getId())
+            .findFirst().get()
+
+    }
+
+    private void saveNewNote() {
+        int newId = UseCaseRepository.notes.stream().max(Comparator.comparing(Note::getId))
+                .get()
+                .getId();
+
+        UseCaseRepository.notes.add(
+                new Note(
+                        maxId + 1,
+                        note.getTitle(),
+                        note.getDescription()
+                )
+        )
+
+    }
+
     private void displayNoteDetails(int noteId) {
         if (noteId == 0) {
             note = new Note();
         }
         binding.noteIdTextView.setText(String.valueOf(noteId));
-    } else {
+    } else
+
+    {
         UseCaseRepository.notes.stream()
                 .filter(note -> note.getId() == noteId)
                 .findFirst()
@@ -78,7 +123,7 @@ public class NoteDetails extends AppCompatActivity {
                 note.getCreationDate() != null ? note.getUpdateDate().format(formatter) : "no data"
         );
         binding.noteUpdateDateTextView.setText(
-                note.getUpdateDate() != null ? note.getUpdateDate().format(formatter) :"no data"
+                note.getUpdateDate() != null ? note.getUpdateDate().format(formatter) : "no data"
         );
     }
 }

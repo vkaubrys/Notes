@@ -40,7 +40,10 @@ public class MainActivity extends AppCompatActivity {
     }
 
     private void setUpListView() {
-        UseCaseRepository.generateDummyNotes(25);
+        if (UseCaseRepository.notes.isEmpty()) {
+            UseCaseRepository.generateDummyNotes(25);
+        }
+
         notes = UseCaseRepository.notes;
 
 
