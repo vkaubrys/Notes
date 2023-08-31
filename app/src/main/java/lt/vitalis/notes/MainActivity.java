@@ -1,7 +1,11 @@
 package lt.vitalis.notes;
 
+import androidx.activity.result.ActivityResultLauncher;
+import androidx.activity.result.contract.ActivityResultContracts;
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.activity.result.contract.ActivityResultContracts.GetContent;
 
+import android.app.Activity;
 import android.app.AlertDialog;
 import android.content.Intent;
 import android.os.Bundle;
@@ -81,14 +85,15 @@ public class MainActivity extends AppCompatActivity {
 
     private void openNoteDetailsActivity(Note note) {
         Intent intent = new Intent(this, NoteDetails.class);
-//        intent.putExtra("id", note.getId());
-//        intent.putExtra("title", note.getTitle());
-//        intent.putExtra("description", note.getDescription());
-//        intent.putExtra("creationDate", note.getCreationDate());
-//        intent.putExtra("updateDate", note.getUpdateDate());
+
         intent.putExtra("note", note);
-        startActivity(intent);
+
+//        startActivity(intent);
+
+        startActivityForReturn.launch(intent);
+
     }
+
 
     private void showItemRemoveAlertDialog(Note note) {
         AlertDialog.Builder builder = new AlertDialog.Builder(this);
@@ -118,6 +123,19 @@ public class MainActivity extends AppCompatActivity {
         showSnackbar("Note with id: " + note.getId() + " was removed");
 
     }
+
+    ActivityResultLauncher<Intent> startActivityForReturn = registerForActivityResult(
+            new ActivityResultContracts.StartActivityForResult(),
+            result -> {
+                if (result.getResultCode() == Activity.RESULT_OK) {
+                    Intent data = result.getData();
+                    if (data != null) {
+                        Note note = (Note) data.getParcelableExtra("note_object_return");
+                        Log.i(TAG, "Reurn note: " + note.toString());
+                    }
+                }
+            }
+    );
 }
 
 
