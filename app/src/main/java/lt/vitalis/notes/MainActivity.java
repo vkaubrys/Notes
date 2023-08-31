@@ -4,7 +4,6 @@ import androidx.appcompat.app.AppCompatActivity;
 
 import android.app.AlertDialog;
 import android.content.Intent;
-import android.net.Uri;
 import android.os.Bundle;
 import android.util.Log;
 import android.widget.ArrayAdapter;
@@ -28,12 +27,12 @@ public class MainActivity extends AppCompatActivity {
 
         binding = ActivityMainBinding.inflate(getLayoutInflater());
         setContentView(binding.getRoot());
+
         setUpListView();
         setUpListViewItemClick();
         setUpListViewItemLongClick();
         setUpFloatingActionButtonClick();
     }
-
 
     private void setUpListView() {
         notes = new ArrayList<>();
@@ -56,12 +55,10 @@ public class MainActivity extends AppCompatActivity {
 //                    Log.i(TAG, "OnListeItemClicked: " + adapterView.getItemAtPosition(position));
 //                    Log.i(TAG, "OnListeItemClicked: " + position);
                     Note note = (Note) adapterView.getItemAtPosition(position);
-                    openNoteDeailsActivity(note);
+                    openNoteDetailsActivity(note);
                 }
         );
     }
-
-
 
     private void setUpListViewItemLongClick() {
         binding.notesListView.setOnItemLongClickListener(
@@ -75,18 +72,28 @@ public class MainActivity extends AppCompatActivity {
     }
 
     private void setUpFloatingActionButtonClick() {
-        binding.floatActionButton.setOnClickListener(
+        binding.floatingActionButton.setOnClickListener(
                 view -> {
-                   showSnackbar("FFAB was clicked");
+                    openNoteDetailsActivity(new Note());
                 }
         );
     }
 
+    private void openNoteDetailsActivity(Note note) {
+        Intent intent = new Intent(this, NoteDetails.class);
+//        intent.putExtra("id", note.getId());
+//        intent.putExtra("title", note.getTitle());
+//        intent.putExtra("description", note.getDescription());
+//        intent.putExtra("creationDate", note.getCreationDate());
+//        intent.putExtra("updateDate", note.getUpdateDate());
+        intent.putExtra("note", note);
+        startActivity(intent);
+    }
 
     private void showItemRemoveAlertDialog(Note note) {
         AlertDialog.Builder builder = new AlertDialog.Builder(this);
         builder
-                .setMessage("Do you realy want to remove thid item?")
+                .setMessage("Do you realy want to remove this item?")
                 .setPositiveButton("Yes", (dialogInterface, i) -> {
                     removeNoteFromList(note);
                 })
@@ -99,7 +106,7 @@ public class MainActivity extends AppCompatActivity {
         Snackbar
                 .make(
                         binding.notesListView,
-                        "FAB was clicked",
+                        message,
                         Snackbar.LENGTH_LONG
                 )
                 .show();
@@ -108,33 +115,7 @@ public class MainActivity extends AppCompatActivity {
     private void removeNoteFromList(Note note) {
         notes.remove(note);
         adapter.notifyDataSetChanged();
-        showSnackbar("Note with id: " + note.getId() + "was removed");
-
-    }
-    private void openNoteDeailsActivity(Note note) {
-        Intent intent = new Intent(this, NoteDetails.class);
-        intent.putExtra("id", note.getId());
-        intent.putExtra("title", note.getTitle());
-        intent.putExtra("description", note.getDescription());
-        intent.putExtra("creationDate", note.getCreationDate());
-        intent.putExtra("updateDate", note.getUpdateDate());
-        startActivity(intent);
-
-
-
-//        Intent sendIntent = new Intent();
-//        sendIntent.setAction(Intent.ACTION_SEND);
-//        sendIntent.putExtra(Intent.EXTRA_TEXT, note.toString());
-//        sendIntent.setType("text/plain");
-//
-//        startActivity(shareintent);
-
-
-//        String videoId = "0xB3T4MPEr0";
-//        Intent intent = new Intent(Intent.ACTION_VIEW, Uri.parse("vnd.youtube:"+videoId));
-//        intent.putExtra("VIDEO_ID", videoId);
-//        startActivity(intent);
-
+        showSnackbar("Note with id: " + note.getId() + " was removed");
 
     }
 }
