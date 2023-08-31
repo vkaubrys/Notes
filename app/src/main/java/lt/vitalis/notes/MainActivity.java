@@ -15,6 +15,7 @@ import com.google.android.material.snackbar.Snackbar;
 
 import java.util.ArrayList;
 import java.util.Comparator;
+import java.util.List;
 
 import lt.vitalis.notes.databinding.ActivityMainBinding;
 
@@ -23,7 +24,7 @@ public class MainActivity extends AppCompatActivity {
     private static final String TAG = "my_notes_main_activity";
     private ActivityMainBinding binding;
     private ArrayAdapter<Note> adapter;
-    private ArrayList<Note> notes;
+    private List<Note> notes;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -39,11 +40,9 @@ public class MainActivity extends AppCompatActivity {
     }
 
     private void setUpListView() {
-        notes = new ArrayList<>();
+        UseCaseRepository.generateDummyNotes(25);
+        notes = UseCaseRepository.notes;
 
-        notes.addAll(
-                UseCaseRepository.generateDummyNotes(25)
-        );
 
         adapter = new ArrayAdapter<>(
                 this,
@@ -97,9 +96,7 @@ public class MainActivity extends AppCompatActivity {
     private void openNoteDetailsActivity(Note note) {
         Intent intent = new Intent(this, NoteDetails.class);
 
-        intent.putExtra("note", note);
-
-        startActivity(intent);
+        intent.putExtra("noteId", note.getId());
 
 //        startActivityForReturn.launch(intent);
 
@@ -170,7 +167,6 @@ public class MainActivity extends AppCompatActivity {
                 }
         );
     }
-
 }
 
 
