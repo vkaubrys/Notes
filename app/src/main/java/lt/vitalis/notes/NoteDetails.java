@@ -16,6 +16,7 @@ public class NoteDetails extends AppCompatActivity {
 ;
     private ActivityNoteDetailsBinding binding;
     private final DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd-HH:mm:ss");
+    private Note note;
 
 
     @Override
@@ -38,7 +39,7 @@ public class NoteDetails extends AppCompatActivity {
         binding.saveButton.setOnClickListener(
                 v -> {
                     note.setTitle(binding.noteNameEditText.getText().toString());
-                    note.setDescripotion(binding.noteUpdateDateText.getText(toString());
+                    note.setDescription(binding.noteUpdateDateTextView.getText().toString());
                     saveNote();
                     Intent finishIntent = new Intent();
                     finishIntent.putExtra("note_object_return", note);

@@ -3,7 +3,6 @@ package lt.vitalis.notes;
 import androidx.activity.result.ActivityResultLauncher;
 import androidx.activity.result.contract.ActivityResultContracts;
 import androidx.appcompat.app.AppCompatActivity;
-import androidx.activity.result.contract.ActivityResultContracts.GetContent;
 
 import android.app.Activity;
 import android.app.AlertDialog;
@@ -15,6 +14,7 @@ import android.widget.ArrayAdapter;
 import com.google.android.material.snackbar.Snackbar;
 
 import java.util.ArrayList;
+import java.util.Comparator;
 
 import lt.vitalis.notes.databinding.ActivityMainBinding;
 
@@ -83,14 +83,25 @@ public class MainActivity extends AppCompatActivity {
         );
     }
 
+    private void updateNoteToList(Note note) {
+        Note newNote = notes.stream()
+                .filter(oldNote -> oldNote.getId() == note.getId())
+                .findFirst().get();
+        newNote.setTitle(note.getTitle());
+        newNote.setDescription(note.getDescription());
+        adapter.notifyDataSetChanged();
+
+
+    }
+
     private void openNoteDetailsActivity(Note note) {
         Intent intent = new Intent(this, NoteDetails.class);
 
         intent.putExtra("note", note);
 
-//        startActivity(intent);
+        startActivity(intent);
 
-        startActivityForReturn.launch(intent);
+//        startActivityForReturn.launch(intent);
 
     }
 
@@ -124,18 +135,42 @@ public class MainActivity extends AppCompatActivity {
 
     }
 
-    ActivityResultLauncher<Intent> startActivityForReturn = registerForActivityResult(
-            new ActivityResultContracts.StartActivityForResult(),
-            result -> {
-                if (result.getResultCode() == Activity.RESULT_OK) {
-                    Intent data = result.getData();
-                    if (data != null) {
-                        Note note = (Note) data.getParcelableExtra("note_object_return");
-                        Log.i(TAG, "Reurn note: " + note.toString());
+    private void addNoteToList(Note note) {
+        notes.add(note);
+        adapter.notifyDataSetChanged();
+        showSnackbar("Note with id: " + note.getId() + " was updated");
+
+        ActivityResultLauncher<Intent> startActivityForReturn = registerForActivityResult(
+                new ActivityResultContracts.StartActivityForResult(),
+                result -> {
+                    if (result.getResultCode() == Activity.RESULT_OK) {
+                        Intent data = result.getData();
+                        if (data != null) {
+                            Note note = (Note) data.getParcelableExtra("note_object_return");
+                            Log.i(TAG, "Reurn note: " + note.toString());
+
+                            if (note.getId() == 0) {
+                                notes
+                                        .stream()
+                                        .max(Comparator.comparing(Note::getId))
+                                        .get().getId();
+                                Note newNote = new Note(
+                                        maxId + 1,
+                                        note.getTitle(),
+                                        note.getDescription()
+
+                                );
+                                addNoteToList(newNote);
+
+                            } else {
+                                updateNoteToList(note);
+                            }
+                        }
                     }
                 }
-            }
-    );
+        );
+    }
+
 }
 
 
