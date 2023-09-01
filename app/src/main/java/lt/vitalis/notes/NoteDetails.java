@@ -13,6 +13,7 @@ import java.time.format.DateTimeFormatter;
 import java.util.Comparator;
 
 import lt.vitalis.notes.databinding.ActivityNoteDetailsBinding;
+import lt.vitalis.notes.repository.NoteDao;
 
 
 public class NoteDetails extends BaseActivity {
@@ -23,6 +24,8 @@ public class NoteDetails extends BaseActivity {
     private final DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd-HH:mm:ss");
     private String demoResult;
     private final String SAVE_INSTANCE_KEY = "note_details_save_instance_key";
+    private NoteDao noteDao;
+
 
     public NoteDetails(String message, String tag) {
         super("NoteDetails", "tst_lfc_main_activity");
@@ -39,14 +42,13 @@ public class NoteDetails extends BaseActivity {
 
         if (intent.getExtras() != null) {
             noteId = intent.getIntExtra(INTENT_MAIN_KEY, 0);
+            note = noteDao.getById(noteId);
+            if (note == null) note = new Note();
+        } else {
+            note = new Note();
+
         }
-
-        displayNoteDetails(noteId);
-        setUpSaveButton();
-//        if(savedInstanceState != null){
-//
-//        }
-
+        print("onCreate demoResult:" + demoResult);
 
 
         binding.noteNameEditText.setOnFocusChangeListener(
@@ -56,6 +58,7 @@ public class NoteDetails extends BaseActivity {
                 }
         );
     }
+
 
     @Override
     protected void onRestoreInstanceState(@NonNull Bundle savedInstanceState) {
@@ -70,12 +73,7 @@ public class NoteDetails extends BaseActivity {
         outState.putString(SAVE_INSTANCE_KEY, demoResult);
     }
 
-    private void displayNoteDetails(int noteId) {
-        if (noteId == 0) {
-            note = new Note();
-        } else {
-            getNoteFromRepository(noteId);
-        }
+    private void displayNoteDetails() {
         binding.noteIdTextView.setText(String.valueOf(note.getId()));
         binding.noteNameEditText.setText(note.getTitle());
         binding.noteContentEditText.setText(note.getDescription());
@@ -83,24 +81,13 @@ public class NoteDetails extends BaseActivity {
         binding.noteUpdateDateTextView.setText(note.getUpdateDate() != null ? note.getUpdateDate().format(formatter) : "no data");
     }
 
-    private void getNoteFromRepository(int noteId) {
-        note = UseCaseRepository.notes.stream().filter(note -> note.getId() == noteId).findFirst().get();
-
-    }
 
     private void setUpSaveButton() {
         binding.saveButton.setOnClickListener(v -> {
-                    addValuesToNote();
-                    if (note.getId() == 0) {
-                        saveNewNote();
-                    } else {
-                        updateNote();
-                    }
-                    finish();
-                }
-        );
+                        saveNote();
+                        finish();
+        });
     }
-
 
     private void addValuesToNote() {
         note.setTitle(
@@ -109,32 +96,5 @@ public class NoteDetails extends BaseActivity {
         note.setDescription(
                 binding.noteContentEditText.getText().toString()
         );
-    }
-
-    private void saveNewNote() {
-        int maxId = UseCaseRepository.notes.stream()
-                .max(Comparator.comparing(Note::getId))
-                .get()
-                .getId();
-
-        UseCaseRepository.notes.add(
-                new Note(
-                        maxId + 1,
-                        note.getTitle(),
-                        note.getDescription()
-                )
-        );
-    }
-
-    private void updateNote() {
-        Note newNote = UseCaseRepository.notes.stream()
-                .filter(onNote -> onNote.getId() == note.getId())
-                .findFirst()
-                .get();
-
-        newNote.setTitle(note.getTitle());
-        newNote.setDescription(note.getDescription());
-
-
     }
 }

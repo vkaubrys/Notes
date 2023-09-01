@@ -14,17 +14,12 @@ public class Note {
     public static final String NOTE_TABLE_NAME = "note";
     @PrimaryKey(autoGenerate = true)
     @ColumnInfo(name = "note_id")
-
     private int id;
 
-// seter
-//    public void setId(int id) {
-//        this.id = id;
-//    }
 
-    @ColumnInfo(name = "note_title")
+    @ColumnInfo(name = "title")
     private String title;
-    @ColumnInfo(name = "note_description")
+    @ColumnInfo(name = "description")
     private String description;
     @Ignore
     private LocalDateTime creationDate;

@@ -6,8 +6,6 @@ import android.os.Bundle;
 import android.util.Log;
 import android.widget.ArrayAdapter;
 
-import androidx.appcompat.app.AppCompatActivity;
-
 import com.google.android.material.snackbar.Snackbar;
 
 import java.util.List;
@@ -117,7 +115,7 @@ public class MainActivity extends BaseActivity {
         builder
                 .setMessage("Do you realy want to remove this item?")
                 .setPositiveButton("Yes", (dialogInterface, i) -> {
-                    removeNoteFromList(note);
+                    deleteNote(note);
                 })
                 .setNegativeButton("No", null)
                 .show();
@@ -134,12 +132,12 @@ public class MainActivity extends BaseActivity {
                 .show();
     }
 
-    private void removeNoteFromList(Note note) {
+    private void deleteNote(Note note) {
+        noteDao.delete(note);
         notes.remove(note);
         adapter.notifyDataSetChanged();
         showSnackbar("Note with id: " + note.getId() + " was removed");
     }
-
 }
 
 
