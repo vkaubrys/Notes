@@ -4,7 +4,9 @@ import static lt.vitalis.notes.MainActivity.INTENT_MAIN_KEY;
 
 import android.content.Intent;
 import android.os.Bundle;
+import android.os.PersistableBundle;
 
+import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
 
 import java.time.format.DateTimeFormatter;
@@ -15,10 +17,12 @@ import lt.vitalis.notes.databinding.ActivityNoteDetailsBinding;
 
 public class NoteDetails extends BaseActivity {
 
+
     private ActivityNoteDetailsBinding binding;
     private Note note;
     private final DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd-HH:mm:ss");
     private String demoResult;
+    private final String SAVE_INSTANCE_KEY = "note_details_save_instance_key";
 
     public NoteDetails(String message, String tag) {
         super("NoteDetails", "tst_lfc_main_activity");
@@ -39,6 +43,9 @@ public class NoteDetails extends BaseActivity {
 
         displayNoteDetails(noteId);
         setUpSaveButton();
+//        if(savedInstanceState != null){
+//
+//        }
 
 
 
@@ -48,6 +55,19 @@ public class NoteDetails extends BaseActivity {
                     print("demoResult: " + demoResult);
                 }
         );
+    }
+
+    @Override
+    protected void onRestoreInstanceState(@NonNull Bundle savedInstanceState) {
+        super.onRestoreInstanceState(savedInstanceState);
+        demoResult = savedInstanceState.getString(SAVE_INSTANCE_KEY);
+        print("onRestore demoResult:" + demoResult);
+    }
+
+    @Override
+    public void onSaveInstanceState(@NonNull Bundle outState) {
+        super.onSaveInstanceState(outState);
+        outState.putString(SAVE_INSTANCE_KEY, demoResult);
     }
 
     private void displayNoteDetails(int noteId) {
@@ -80,6 +100,7 @@ public class NoteDetails extends BaseActivity {
                 }
         );
     }
+
 
     private void addValuesToNote() {
         note.setTitle(

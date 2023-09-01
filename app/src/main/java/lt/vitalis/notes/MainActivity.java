@@ -13,6 +13,8 @@ import com.google.android.material.snackbar.Snackbar;
 import java.util.List;
 
 import lt.vitalis.notes.databinding.ActivityMainBinding;
+import lt.vitalis.notes.repository.MainDataBase;
+import lt.vitalis.notes.repository.NoteDao;
 
 public class MainActivity extends BaseActivity {
 
@@ -21,6 +23,7 @@ public class MainActivity extends BaseActivity {
     private ActivityMainBinding binding;
     private ArrayAdapter<Note> adapter;
     private List<Note> notes;
+    private NoteDao noteDao;
 
     public MainActivity() {
         super("MainActivity", "tst_lfc_main_activity");
@@ -34,6 +37,8 @@ public class MainActivity extends BaseActivity {
 
         binding = ActivityMainBinding.inflate(getLayoutInflater());
         setContentView(binding.getRoot());
+
+
 
         setUpListView();
         setUpListViewItemClick();
@@ -49,11 +54,21 @@ public class MainActivity extends BaseActivity {
 
 
     private void setUpListView() {
-        if (UseCaseRepository.notes.isEmpty()) {
+        noteDao = MainDataBase
+                .getInstance(getApplicationContext())
+                .noteDao();
+
+
+
+
+
+        if (noteDao.getAll().isEmpty()){
             UseCaseRepository.generateDummyNotes(25);
+            noteDao.insertNotes(UseCaseRepository.notes); // castina
+            notes = noteDao.getAll();
+
         }
 
-        notes = UseCaseRepository.notes;
 
         adapter = new ArrayAdapter<>(
                 this,
