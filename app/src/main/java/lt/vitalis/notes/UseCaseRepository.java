@@ -7,10 +7,7 @@ import java.util.UUID;
 public class UseCaseRepository {
     public static List<Note> notes = new ArrayList<>();
 
-
     public static void generateDummyNotes(int notesNumber) {
-
-
         for (int i = 1; i <= notesNumber; i++) {
             notes.add(
                     new Note(
@@ -20,8 +17,6 @@ public class UseCaseRepository {
                     )
             );
         }
-
-
     }
 }
 

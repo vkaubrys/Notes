@@ -1,10 +1,5 @@
 package lt.vitalis.notes;
 
-import android.os.Parcel;
-import android.os.Parcelable;
-
-import androidx.annotation.NonNull;
-
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
 
@@ -34,13 +29,13 @@ public class Note {
         this.updateDate = LocalDateTime.now();
     }
 
-    protected Note(Parcel in) {
-        id = in.readInt();
-        title = in.readString();
-        description = in.readString();
-        creationDate = (LocalDateTime) in.readSerializable();
-        updateDate = (LocalDateTime) in.readSerializable();
-    }
+//    protected Note(Parcel in) {
+//        id = in.readInt();
+//        title = in.readString();
+//        description = in.readString();
+//        creationDate = (LocalDateTime) in.readSerializable();
+//        updateDate = (LocalDateTime) in.readSerializable();
+//    }
 
     public int getId() {
         return id;
@@ -83,8 +78,4 @@ public class Note {
                 this.updateDate != null ? this.updateDate.format(formatter) : "no data"
         );
     }
-
-
-
-
 }
